@@ -1,14 +1,11 @@
 package com.codewitharjun.fullstackbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Tarif {
+public class Tarifsw {
 
     @Id
     @GeneratedValue
