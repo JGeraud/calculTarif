@@ -57,15 +57,15 @@ public class TarifController {
         Double rau = tarifsw.getRau();
         Double ect = tarifsw.getEct();
         Integer da = tarifsw.getDa();
-        Long aib = tarifsw.getAib();
+       // Long aib = tarifsw.getAib();
         Integer tva = tarifsw.getTva();
 
-        if (ps == null || pcs == null || pc == null || rs == null || rau == null || ect == null || da == null || aib == null || tva == null) {
+        if (ps == null || pcs == null || pc == null || rs == null || rau == null || ect == null || da == null || tva == null) {
             throw new IllegalStateException("Une ou plusieurs valeur sont null");
         }
 
         // Calcul du taux
-        double taux = ((pc+pcs+ps+rs+rau+ect)+(((pc+pcs+ps+rs+rau+ect)/100)*da)+(((pc+pcs+ps+rs+rau+ect+da)/100)*aib)+(((pc+pcs+ps+rs+rau+ect+da+aib)/100)*tva)) ;
+        double taux = ((pc+pcs+ps+rs+rau+ect)+(((pc+pcs+ps+rs+rau+ect)/100)*da)+(((pc+pcs+ps+rs+rau+ect+da)/100)*tva)) ;
 
         return taux;
     }

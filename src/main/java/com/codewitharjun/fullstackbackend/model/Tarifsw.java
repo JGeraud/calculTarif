@@ -1,14 +1,13 @@
 package com.codewitharjun.fullstackbackend.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Tarifsw {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tarif_generator")
+    @SequenceGenerator(name = "tarif_generator", sequenceName = "tarif_sequence", allocationSize = 1, initialValue = 669)
     private Long id;
 
     private Integer nomenclature;
@@ -26,13 +25,15 @@ public class Tarifsw {
 
     private Double tst;
 
-    private Integer dd;
+    private Integer dd_sw;
+
+
 
     private Integer tva;
 
     private  Double ect;
 
-    private Long aib;
+  //  private Long aib;
 
     private Integer da;
 
@@ -44,10 +45,23 @@ public class Tarifsw {
 
     private Integer tsr;
 
+    public Integer getDd_sw() {
+        return dd_sw;
+    }
 
+    public void setDd_sw(Integer dd_sw) {
+        this.dd_sw = dd_sw;
+    }
 
+    public Integer getDdSh2022() {
+        return ddSh2022;
+    }
 
-    private Integer ddsh2022;
+    public void setDdSh2022(Integer ddSh2022) {
+        this.ddSh2022 = ddSh2022;
+    }
+
+    private Integer ddSh2022;
 
     private String codeUnite;
 
@@ -123,13 +137,7 @@ public class Tarifsw {
         this.tst = tst;
     }
 
-    public Integer getDd() {
-        return dd;
-    }
 
-    public void setDd(Integer dd) {
-        this.dd = dd;
-    }
 
     public Integer getTva() {
         return tva;
@@ -147,13 +155,13 @@ public class Tarifsw {
         this.ect = ect;
     }
 
-    public Long getAib() {
+   /* public Long getAib() {
         return aib;
     }
 
     public void setAib(Long aib) {
         this.aib = aib;
-    }
+    }*/
 
     public Integer getDa() {
         return da;
@@ -195,13 +203,13 @@ public class Tarifsw {
         this.tsr = tsr;
     }
 
-    public Integer getDdsh2022() {
+   /* public Integer getDdsh2022() {
         return ddsh2022;
     }
 
     public void setDdsh2022(Integer ddsh2022) {
         this.ddsh2022 = ddsh2022;
-    }
+    }*/
 
     public String getCodeUnite() {
         return codeUnite;
