@@ -1,6 +1,7 @@
 package com.codewitharjun.fullstackbackend.controller;
 
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.codewitharjun.fullstackbackend.exception.TarifNotFoundException;
 import com.codewitharjun.fullstackbackend.model.Tarifsw;
 import com.codewitharjun.fullstackbackend.repository.TarifRepository;
@@ -57,6 +58,7 @@ public class TarifController {
         Double rau = tarifsw.getRau();
         Double ect = tarifsw.getEct();
         Integer da = tarifsw.getDa();
+        Integer dd = tarifsw.getDd_sw();
        // Long aib = tarifsw.getAib();
         Integer tva = tarifsw.getTva();
 
@@ -64,10 +66,22 @@ public class TarifController {
             throw new IllegalStateException("Une ou plusieurs valeur sont null");
         }
 
-        // Calcul du taux
-        double taux = ((pc+pcs+ps+rs+rau+ect)+(((pc+pcs+ps+rs+rau+ect)/100)*da)+(((pc+pcs+ps+rs+rau+ect+da)/100)*tva)) ;
+         double tauxda = ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da);
+        double tauxaid = ((((pc+pcs+ps+dd+rs+rau+ect) +(((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*1);
+        double tauxtva =   ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
 
-        return taux;
+        System.out.println("le taux da est " + tauxda );
+        System.out.println("le taux aib est " + tauxaid );
+        System.out.println("le taux tva est " + tauxtva );
+
+        // Calcul du taux
+         double taux = (pc+pcs+ps+rs+dd+rau+ect)+
+                 ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
+                 ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
+                 ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
+
+
+        return  taux;
     }
 
 
