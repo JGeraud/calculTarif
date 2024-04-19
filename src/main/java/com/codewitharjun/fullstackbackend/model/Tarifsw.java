@@ -7,8 +7,8 @@ public class Tarifsw {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tarif_generator")
-    @SequenceGenerator(name = "tarif_generator", sequenceName = "tarif_sequence", allocationSize = 1, initialValue = 669)
-    private Long id;
+    @SequenceGenerator(name = "tarif_generator", sequenceName = "tarif_sequence", allocationSize = 1, initialValue = 6382)
+    private Integer  id;
 
     private Integer nomenclature;
 
@@ -65,11 +65,11 @@ public class Tarifsw {
 
     private String codeUnite;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
