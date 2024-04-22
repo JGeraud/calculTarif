@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface TarifRepository extends JpaRepository<Tarifsw,Integer> {
  Optional<Object> findByNomenclature(Integer nomenclature);
+
 }
