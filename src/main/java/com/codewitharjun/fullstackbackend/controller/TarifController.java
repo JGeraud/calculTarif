@@ -24,7 +24,7 @@ public class TarifController {
         return tarifRepository.save(newTarifsw);
     }
 
-    @GetMapping("/api/tarifs")
+    @GetMapping("/api")
     List<Tarifsw> getAllTarif() {
         return tarifRepository.findAll();
     }
@@ -38,6 +38,19 @@ public class TarifController {
 
     class tarifsw {
         String libelle ;
+        double taux;
+
+        public tarifsw(double taux) {
+            this.taux = taux;
+        }
+
+        public double getTaux() {
+            return taux;
+        }
+
+        public void setTaux(double taux) {
+            this.taux = taux;
+        }
 
         public tarifsw(String libelle) {
             this.libelle = libelle;
@@ -60,7 +73,13 @@ public class TarifController {
     }
 
 
-    @GetMapping("/api/tarif/{nomenclature}/taux")
+
+
+    //calcul du taux
+
+
+
+    @GetMapping("/api/tarif/taux/{nomenclature}")
     double getTauxByNomenclature(@PathVariable Integer nomenclature) {
         Tarifsw tarifsw = (Tarifsw) tarifRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
@@ -93,8 +112,7 @@ public class TarifController {
                  ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
                  ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
 
-
-        return  taux;
+         return new tarifsw(taux).getTaux();
     }
 
 
