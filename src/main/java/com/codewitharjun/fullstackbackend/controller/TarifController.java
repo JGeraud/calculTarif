@@ -1,7 +1,6 @@
 package com.codewitharjun.fullstackbackend.controller;
 
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.codewitharjun.fullstackbackend.exception.TarifNotFoundException;
 import com.codewitharjun.fullstackbackend.model.Tarifsw;
 import com.codewitharjun.fullstackbackend.repository.TarifRepository;
@@ -38,19 +37,8 @@ public class TarifController {
 
     class tarifsw {
         String libelle ;
-        double taux;
 
-        public tarifsw(double taux) {
-            this.taux = taux;
-        }
 
-        public double getTaux() {
-            return taux;
-        }
-
-        public void setTaux(double taux) {
-            this.taux = taux;
-        }
 
         public tarifsw(String libelle) {
             this.libelle = libelle;
@@ -63,6 +51,109 @@ public class TarifController {
         public void setLibelle(String libelle) {
             this.libelle = libelle;
         }
+    }
+
+    class  tarifswtaux{
+
+        double taux;
+
+        double tauxda, tauxaib, tauxtva, tauxrs, tauxpc,tauxpcs,tauxps,tauxrau,tauxetc;
+        public tarifswtaux(double taux, double tauxaid, double tauxda, double tauxtva, double tauxrs, double tauxps, double tauxpcs, double tauxrau, double tauxetc, double v) {
+            this.taux =taux;
+            this.tauxaib=tauxaid;
+            this.tauxda = tauxda;
+            this.tauxtva=tauxtva;
+            this.tauxpc=tauxpcs;
+            this.tauxpcs=tauxpcs;
+            this.tauxrs=tauxrs;
+            this.tauxps=tauxps;
+            this.tauxrau=tauxrau;
+            this.tauxetc=tauxetc;
+
+        }
+
+        public double getTauxrs() {
+            return tauxrs;
+        }
+
+        public void setTauxrs(double tauxrs) {
+            this.tauxrs = tauxrs;
+        }
+
+        public double getTauxpc() {
+            return tauxpc;
+        }
+
+        public void setTauxpc(double tauxpc) {
+            this.tauxpc = tauxpc;
+        }
+
+        public double getTauxpcs() {
+            return tauxpcs;
+        }
+
+        public void setTauxpcs(double tauxpcs) {
+            this.tauxpcs = tauxpcs;
+        }
+
+        public double getTauxps() {
+            return tauxps;
+        }
+
+        public void setTauxps(double tauxps) {
+            this.tauxps = tauxps;
+        }
+
+        public double getTauxrau() {
+            return tauxrau;
+        }
+
+        public void setTauxrau(double tauxrau) {
+            this.tauxrau = tauxrau;
+        }
+
+        public double getTauxetc() {
+            return tauxetc;
+        }
+
+        public void setTauxetc(double tauxetc) {
+            this.tauxetc = tauxetc;
+        }
+
+        public double getTauxda() {
+            return tauxda;
+        }
+
+        public void setTauxda(double tauxda) {
+            this.tauxda = tauxda;
+        }
+
+        public double getTauxaib() {
+            return tauxaib;
+        }
+
+        public void setTauxaib(double tauxaib) {
+            this.tauxaib = tauxaib;
+        }
+
+        public double getTauxtva() {
+            return tauxtva;
+        }
+
+        public void setTauxtva(double tauxtva) {
+            this.tauxtva = tauxtva;
+        }
+
+
+        public double getTaux() {
+            return taux;
+        }
+
+        public void setTaux(double taux) {
+            this.taux = taux;
+        }
+
+
     }
     @GetMapping("/api/tariflibelle/{Libellenomenclature}")
     Object getLibelleByNomenclature(@PathVariable("Libellenomenclature") Integer nomenclature) {
@@ -80,7 +171,7 @@ public class TarifController {
 
 
     @GetMapping("/api/tarif/taux/{nomenclature}")
-    double getTauxByNomenclature(@PathVariable Integer nomenclature) {
+    tarifswtaux getTauxByNomenclature(@PathVariable Integer nomenclature) {
         Tarifsw tarifsw = (Tarifsw) tarifRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
 
@@ -106,13 +197,20 @@ public class TarifController {
         System.out.println("le taux aib est " + tauxaid );
         System.out.println("le taux tva est " + tauxtva );
 
+        double tauxps = tarifsw.getPs();
+        double tauxpcs = tarifsw.getPcs();
+        double tauxpc = tarifsw.getPc();
+        double tauxrs = tarifsw.getRs();
+        double tauxrau = tarifsw.getRau();
+        double tauxect = tarifsw.getEct();
+
         // Calcul du taux
          double taux = (pc+pcs+ps+rs+dd+rau+ect)+
                  ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
                  ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
                  ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
 
-         return new tarifsw(taux).getTaux();
+         return new tarifswtaux(taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps, tauxrau, tauxpc, tauxect, tauxpcs);
     }
 
 
