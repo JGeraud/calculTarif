@@ -29,7 +29,7 @@ public class TarifController {
     }
 
    @GetMapping("/api/tarif/{nomenclature}")
-   Object getTarifByNomenclature(@PathVariable Integer nomenclature) {
+   Object getTarifByNomenclature(@PathVariable String nomenclature) {
         return tarifRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
     }
@@ -57,19 +57,29 @@ public class TarifController {
 
         double taux;
 
-        double tauxda, tauxaib, tauxtva, tauxrs, tauxpc,tauxpcs,tauxps,tauxrau,tauxetc;
-        public tarifswtaux(double taux, double tauxaid, double tauxda, double tauxtva, double tauxrs, double tauxps, double tauxpcs, double tauxrau, double tauxetc, double v) {
+        double tauxda, tauxaib, tauxtva, tauxrs, tauxpc,tauxpcs,tauxps,tauxrau,tauxect,tauxdd;
+
+
+
+        public tarifswtaux(double taux, double tauxaid, double tauxda, double tauxtva, double tauxrs, double tauxps, double tauxpcs, double tauxrau, double tauxect, double tauxdd, double v) {
             this.taux =taux;
             this.tauxaib=tauxaid;
             this.tauxda = tauxda;
             this.tauxtva=tauxtva;
-            this.tauxpc=tauxpcs;
-            this.tauxpcs=tauxpcs;
             this.tauxrs=tauxrs;
             this.tauxps=tauxps;
+            this.tauxpc=tauxpcs;
             this.tauxrau=tauxrau;
-            this.tauxetc=tauxetc;
+            this.tauxect=tauxect;
+            this.tauxdd=tauxdd;
 
+        }
+        public double getTauxdd() {
+            return tauxdd;
+        }
+
+        public void setTauxdd(double tauxdd) {
+            this.tauxrs = tauxdd;
         }
 
         public double getTauxrs() {
@@ -112,12 +122,12 @@ public class TarifController {
             this.tauxrau = tauxrau;
         }
 
-        public double getTauxetc() {
-            return tauxetc;
+        public double getTauxect() {
+            return tauxect;
         }
 
-        public void setTauxetc(double tauxetc) {
-            this.tauxetc = tauxetc;
+        public void setTauxect(double tauxect) {
+            this.tauxect = tauxect;
         }
 
         public double getTauxda() {
@@ -156,7 +166,7 @@ public class TarifController {
 
     }
     @GetMapping("/api/tariflibelle/{Libellenomenclature}")
-    Object getLibelleByNomenclature(@PathVariable("Libellenomenclature") Integer nomenclature) {
+    Object getLibelleByNomenclature(@PathVariable("Libellenomenclature") String nomenclature) {
         Tarifsw tarifsw = (Tarifsw) tarifRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
         System.out.println("le libeller voulu  est " + tarifsw.getLibelle());
@@ -171,20 +181,20 @@ public class TarifController {
 
 
     @GetMapping("/api/tarif/taux/{nomenclature}")
-    tarifswtaux getTauxByNomenclature(@PathVariable Integer nomenclature) {
+    tarifswtaux getTauxByNomenclature(@PathVariable String nomenclature) {
         Tarifsw tarifsw = (Tarifsw) tarifRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
 
         Double ps = tarifsw.getPs();
         Double pcs = tarifsw.getPcs();
         Double pc = tarifsw.getPc();
-        Integer rs = tarifsw.getRs();
+        Double rs = tarifsw.getRs();
         Double rau = tarifsw.getRau();
         Double ect = tarifsw.getEct();
-        Integer da = tarifsw.getDa();
-        Integer dd = tarifsw.getDd_sw();
+        Double da = tarifsw.getDa();
+        Double dd = tarifsw.getDd_sw();
        // Long aib = tarifsw.getAib();
-        Integer tva = tarifsw.getTva();
+        Double tva = tarifsw.getTva();
 
         if (ps == null || pcs == null || pc == null || rs == null || rau == null || ect == null || da == null || tva == null) {
             throw new IllegalStateException("Une ou plusieurs valeur sont null");
@@ -203,6 +213,8 @@ public class TarifController {
         double tauxrs = tarifsw.getRs();
         double tauxrau = tarifsw.getRau();
         double tauxect = tarifsw.getEct();
+        double tauxdd = tarifsw.getDd_sw();
+
 
         // Calcul du taux
          double taux = (pc+pcs+ps+rs+dd+rau+ect)+
@@ -210,7 +222,7 @@ public class TarifController {
                  ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
                  ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
 
-         return new tarifswtaux(taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps, tauxrau, tauxpc, tauxect, tauxpcs);
+         return new tarifswtaux(taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps, tauxrau, tauxpc, tauxect, tauxpcs, tauxdd);
     }
 
 

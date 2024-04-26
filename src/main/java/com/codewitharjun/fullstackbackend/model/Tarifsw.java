@@ -10,7 +10,7 @@ public class Tarifsw {
     @SequenceGenerator(name = "tarif_generator", sequenceName = "tarif_sequence", allocationSize = 1, initialValue = 669)
     private Long id;
 
-    private Integer nomenclature;
+    private String nomenclature;
 
     private String libelle;
 
@@ -19,37 +19,37 @@ public class Tarifsw {
     private Double pcs;
      private Double ps;
 
-    private Integer rs;
+    private Double rs;
 
     private Double rau;
 
     private Double tst;
 
-    private Integer dd_sw;
+    private Double dd_sw;
 
 
 
-    private Integer tva;
+    private Double tva;
 
     private  Double ect;
 
   //  private Long aib;
 
-    private Integer da;
+    private Double da;
 
-    private  Integer caf ;
+    private  Double caf ;
 
-    private Integer ttv;
+    private Double ttv;
 
-    private Integer tfs;
+    private Double tfs;
 
-    private Integer tsr;
+    private Double tsr;
 
-    public Integer getDd_sw() {
+    public Double getDd_sw() {
         return dd_sw;
     }
 
-    public void setDd_sw(Integer dd_sw) {
+    public void setDd_sw(Double dd_sw) {
         this.dd_sw = dd_sw;
     }
 
@@ -73,11 +73,11 @@ public class Tarifsw {
         this.id = id;
     }
 
-    public Integer getNomenclature() {
+    public String getNomenclature() {
         return nomenclature;
     }
 
-    public void setNomenclature(Integer nomenclature) {
+    public void setNomenclature(String nomenclature) {
         this.nomenclature = nomenclature;
     }
 
@@ -113,11 +113,11 @@ public class Tarifsw {
         this.ps = ps;
     }
 
-    public Integer getRs() {
+    public Double getRs() {
         return rs;
     }
 
-    public void setRs(Integer rs) {
+    public void setRs(Double rs) {
         this.rs = rs;
     }
 
@@ -139,11 +139,11 @@ public class Tarifsw {
 
 
 
-    public Integer getTva() {
+    public Double getTva() {
         return tva;
     }
 
-    public void setTva(Integer tva) {
+    public void setTva(Double tva) {
         this.tva = tva;
     }
 
@@ -163,43 +163,43 @@ public class Tarifsw {
         this.aib = aib;
     }*/
 
-    public Integer getDa() {
+    public Double getDa() {
         return da;
     }
 
-    public void setDa(Integer da) {
+    public void setDa(Double da) {
         this.da = da;
     }
 
-    public Integer getCaf() {
+    public Double getCaf() {
         return caf;
     }
 
-    public void setCaf(Integer caf) {
+    public void setCaf(Double caf) {
         this.caf = caf;
     }
 
-    public Integer getTtv() {
+    public Double getTtv() {
         return ttv;
     }
 
-    public void setTtv(Integer ttv) {
+    public void setTtv(Double ttv) {
         this.ttv = ttv;
     }
 
-    public Integer getTfs() {
+    public Double getTfs() {
         return tfs;
     }
 
-    public void setTfs(Integer tfs) {
+    public void setTfs(Double tfs) {
         this.tfs = tfs;
     }
 
-    public Integer getTsr() {
+    public Double getTsr() {
         return tsr;
     }
 
-    public void setTsr(Integer tsr) {
+    public void setTsr(Double tsr) {
         this.tsr = tsr;
     }
 

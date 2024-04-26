@@ -5,7 +5,7 @@ import com.codewitharjun.fullstackbackend.model.Tarifsw;
 
 import java.util.Optional;
 
-public interface TarifRepository extends JpaRepository<Tarifsw,Integer> {
- Optional<Object> findByNomenclature(Integer nomenclature);
+public interface TarifRepository extends JpaRepository<Tarifsw,String> {
+ Optional<Object> findByNomenclature(String nomenclature);
 
 }
