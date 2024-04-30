@@ -56,12 +56,13 @@ public class TarifController {
     class  tarifswtaux{
 
         double taux;
-
+        int counter;
         double tauxda, tauxaib, tauxtva, tauxrs, tauxpc,tauxpcs,tauxps,tauxrau,tauxect,tauxdd;
 
 
 
-        public tarifswtaux(double taux, double tauxaid, double tauxda, double tauxtva, double tauxrs, double tauxps, double tauxpcs, double tauxrau, double tauxect, double tauxdd, double v) {
+        public tarifswtaux(int counter, double taux, double tauxaid, double tauxda, double tauxtva, double tauxrs, double tauxps, double tauxpcs, double tauxrau, double tauxect, double tauxdd, double v) {
+            this.counter=counter;
             this.taux =taux;
             this.tauxaib=tauxaid;
             this.tauxda = tauxda;
@@ -74,6 +75,15 @@ public class TarifController {
             this.tauxdd=tauxdd;
 
         }
+
+        public int getCounter() {
+            return counter;
+        }
+
+        public void setCounter(int counter) {
+            this.counter = counter;
+        }
+
         public double getTauxdd() {
             return tauxdd;
         }
@@ -178,12 +188,14 @@ public class TarifController {
 
     //calcul du taux
 
-
+    private int counter = 0;
 
     @GetMapping("/api/tarif/taux/{nomenclature}")
     tarifswtaux getTauxByNomenclature(@PathVariable String nomenclature) {
         Tarifsw tarifsw = (Tarifsw) tarifRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
+
+        counter++;
 
         Double ps = tarifsw.getPs();
         Double pcs = tarifsw.getPcs();
@@ -222,7 +234,7 @@ public class TarifController {
                  ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
                  ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
 
-         return new tarifswtaux(taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps, tauxrau, tauxpc, tauxect, tauxpcs, tauxdd);
+         return new tarifswtaux(counter,taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps, tauxrau, tauxpc, tauxect, tauxpcs, tauxdd);
     }
 
 
