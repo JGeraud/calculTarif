@@ -61,7 +61,7 @@ public class TarifController {
 
 
 
-        public tarifswtaux(int counter, double taux, double tauxaid, double tauxda, double tauxtva, double tauxrs, double tauxps, double tauxpcs, double tauxrau, double tauxect, double tauxdd, double v) {
+        public tarifswtaux(int counter, double taux, double tauxaid, double tauxda, double tauxtva, double tauxrs, double tauxps, double tauxpcs, double tauxrau,double tauxpc, double tauxect, double tauxdd) {
             this.counter=counter;
             this.taux =taux;
             this.tauxaib=tauxaid;
@@ -69,8 +69,9 @@ public class TarifController {
             this.tauxtva=tauxtva;
             this.tauxrs=tauxrs;
             this.tauxps=tauxps;
-            this.tauxpc=tauxpcs;
+            this.tauxpcs=tauxpcs;
             this.tauxrau=tauxrau;
+            this.tauxpc=tauxpc;
             this.tauxect=tauxect;
             this.tauxdd=tauxdd;
 
@@ -234,7 +235,7 @@ public class TarifController {
                  ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
                  ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
 
-         return new tarifswtaux(counter,taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps, tauxrau, tauxpc, tauxect, tauxpcs, tauxdd);
+         return new tarifswtaux(counter,taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps,tauxpcs, tauxrau, tauxpc, tauxect,  tauxdd);
     }
 
 
