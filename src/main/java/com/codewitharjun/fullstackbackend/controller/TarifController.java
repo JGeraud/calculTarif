@@ -37,11 +37,97 @@ public class TarifController {
 
     class tarifsw {
         String libelle ;
-
+        Double ps, pcs, pc, rs, rau, ect, dd, da, tva, aib;
 
 
         public tarifsw(String libelle) {
             this.libelle = libelle;
+        }
+
+        public Double getPs() {
+            return ps;
+        }
+
+        public void setPs(Double ps) {
+            this.ps = ps;
+        }
+
+        public Double getPcs() {
+            return pcs;
+        }
+
+        public Double getRau() {
+            return rau;
+        }
+
+        public void setRau(Double rau) {
+            this.rau = rau;
+        }
+
+        public Double getEct() {
+            return ect;
+        }
+
+        public void setEct(Double ect) {
+            this.ect = ect;
+        }
+
+        public Double getDd() {
+            return dd;
+        }
+
+        public void setDd(Double dd) {
+            this.dd = dd;
+        }
+
+        public Double getDa() {
+            return da;
+        }
+
+        public void setDa(Double da) {
+            this.da = da;
+        }
+
+        public Double getTva() {
+            return tva;
+        }
+
+        public void setTva(Double tva) {
+            this.tva = tva;
+        }
+
+        public Double getAib() {
+            return aib;
+        }
+
+        public void setAib(Double aib) {
+            this.aib = aib;
+        }
+
+        public void setPcs(Double pcs) {
+            this.pcs = pcs;
+        }
+
+        public Double getPc() {
+            return pc;
+        }
+
+        public void setPc(Double pc) {
+            this.pc = pc;
+        }
+
+        public Double getRs() {
+            return rs;
+        }
+
+        public void setRs(Double rs) {
+            this.rs = rs;
+        }
+
+        public tarifsw(Double ps, Double pcs, Double pc, Double rs, Double rau, Double ect, Double dd, Double da, Double tva) {
+                this.ps=ps;this.pcs=pcs;this.pc=pc;this.rs=rs;this.rau=rau;this.ect=ect;this.dd=dd;this.da=da;this.tva=tva;
+
+
         }
 
         public String getLibelle() {
@@ -53,7 +139,7 @@ public class TarifController {
         }
     }
 
-    class  tarifswtaux{
+    class  tarifswtaux {
 
         double taux;
         int counter;
@@ -235,7 +321,40 @@ public class TarifController {
                  ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
                  ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
 
-         return new tarifswtaux(counter,taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps,tauxpcs, tauxrau, tauxpc, tauxect,  tauxdd);
+         return new tarifswtaux(counter,taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps,tauxpcs, tauxrau, tauxpc, tauxect,tauxdd);
+    }
+
+
+    //Recuperation des taux lineaire
+
+
+    @GetMapping("/api/tarif/tauxlineaire/{nomenclature}")
+    tarifsw getTauxLineaireByNomenclature(@PathVariable String nomenclature) {
+        Tarifsw tarifsw = (Tarifsw) tarifRepository.findByNomenclature(nomenclature)
+                .orElseThrow(() -> new TarifNotFoundException(nomenclature));
+
+        counter++;
+
+        Double ps = tarifsw.getPs();
+        Double pcs = tarifsw.getPcs();
+        Double pc = tarifsw.getPc();
+        Double rs = tarifsw.getRs();
+        Double rau = tarifsw.getRau();
+        Double ect = tarifsw.getEct();
+        Double da = tarifsw.getDa();
+        Double dd = tarifsw.getDd_sw();
+        // Long aib = tarifsw.getAib();
+        Double tva = tarifsw.getTva();
+
+        if (ps == null || pcs == null || pc == null || rs == null || rau == null || ect == null || da == null || tva == null) {
+            throw new IllegalStateException("Une ou plusieurs valeur sont null");
+        }
+
+
+
+        // Calcul du taux
+
+        return new tarifsw(ps, pcs, pc, rs, rau, ect,dd,da,tva);
     }
 
 

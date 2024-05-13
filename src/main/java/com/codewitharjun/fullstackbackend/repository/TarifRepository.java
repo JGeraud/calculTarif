@@ -8,4 +8,8 @@ import java.util.Optional;
 public interface TarifRepository extends JpaRepository<Tarifsw,String> {
  Optional<Object> findByNomenclature(String nomenclature);
 
+ Optional<Object> getTauxLineaireByNomenclature(String nomenclature);
+
+
+
 }
