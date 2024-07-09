@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @CrossOrigin("*")
 public class TarifUemoaController {
@@ -246,6 +249,35 @@ public class TarifUemoaController {
 
 
     }
+    public class CalculResult {
+        private String nomenclature;
+        private double taux;
+
+        public CalculResult(String nomenclature, double taux) {
+            this.nomenclature = nomenclature;
+            this.taux = taux;
+        }
+
+        // Getters et setters
+
+        public String getNomenclature() {
+            return nomenclature;
+        }
+
+        public void setNomenclature(String nomenclature) {
+            this.nomenclature = nomenclature;
+        }
+
+        public double getTaux() {
+            return taux;
+        }
+
+        public void setTaux(double taux) {
+            this.taux = taux;
+        }
+    }
+    private List<CalculResult> historiqueCalculs = new ArrayList<>();
+
 
     private int counter = 0;
 
@@ -257,7 +289,7 @@ public class TarifUemoaController {
         counter++;
 
         Double ps = 0.0;
-        Double pcs = tarifsw.getPcs();
+        Double pcs = 0.0;
         Double pc = 0.0;
         Double rs = 0.0;
         Double rau = tarifsw.getRau();
@@ -293,7 +325,15 @@ public class TarifUemoaController {
                 ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
                 ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
 
+
+        historiqueCalculs.add(new CalculResult(nomenclature, taux));
         return new TarifUemoaController.tarifswtaux(counter,taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps,tauxpcs, tauxrau, tauxpc, tauxect,tauxdd);
+    }
+
+    //Recuperation de l'historique
+    @GetMapping("/api/tarifUemoa/historique")
+    public List<CalculResult> getHistoriqueCalculs() {
+        return historiqueCalculs;
     }
 
 

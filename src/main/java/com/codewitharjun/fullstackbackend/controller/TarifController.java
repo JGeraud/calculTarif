@@ -7,7 +7,9 @@ import com.codewitharjun.fullstackbackend.repository.TarifRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -262,16 +264,36 @@ public class TarifController {
 
 
     }
-    @GetMapping("/api/tariflibelle/{Libellenomenclature}")
+   /* @GetMapping("/api/tariflibelle/{Libellenomenclature}")
     Object getLibelleByNomenclature(@PathVariable("Libellenomenclature") String nomenclature) {
         Tarifsw tarifsw = (Tarifsw) tarifRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
         System.out.println("le libeller voulu  est " + tarifsw.getLibelle());
+      // private String nomenclature =
+
         return new tarifsw(tarifsw.getLibelle());
+    }*/
+
+    @GetMapping("/api/tariflibelle/{Libellenomenclature}")
+    Object getLibelleByNomenclature(@PathVariable("Libellenomenclature") String nomenclature) {
+        Tarifsw tarifsw = (Tarifsw) tarifRepository.findByNomenclature(nomenclature)
+                .orElseThrow(() -> new TarifNotFoundException(nomenclature));
+        System.out.println("Le libellé voulu est : " + tarifsw.getLibelle());
+
+        if (nomenclature.equals("8703231100") || nomenclature.equals("8703231900") || nomenclature.equals("8703232000")
+                || nomenclature.equals("8703241100") || nomenclature.equals("8703241900") || nomenclature.equals("8703242000")
+        ) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("nomenclature", nomenclature);
+            result.put("libelle", tarifsw.getLibelle());
+            return result;
+        } else {
+            return new tarifsw(tarifsw.getLibelle());
+        }
     }
 
 
-
+    
 
     //calcul du taux
 
@@ -292,7 +314,7 @@ public class TarifController {
         Double ect = tarifsw.getEct();
         Double da = tarifsw.getDa();
         Double dd = tarifsw.getDd_sw();
-       // Long aib = tarifsw.getAib();
+        int aib = 1;
         Double tva = tarifsw.getTva();
 
         if (ps == null || pcs == null || pc == null || rs == null || rau == null || ect == null || da == null || tva == null) {
@@ -313,7 +335,6 @@ public class TarifController {
         double tauxrau = tarifsw.getRau();
         double tauxect = tarifsw.getEct();
         double tauxdd = tarifsw.getDd_sw();
-
 
         // Calcul du taux
          double taux = (pc+pcs+ps+rs+dd+rau+ect)+
