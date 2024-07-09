@@ -281,17 +281,19 @@ public class TarifController {
         System.out.println("Le libellé voulu est : " + tarifsw.getLibelle());
 
         if (nomenclature.equals("8703231100") || nomenclature.equals("8703231900") || nomenclature.equals("8703232000")
-                || nomenclature.equals("8703241100") || nomenclature.equals("8703241900") || nomenclature.equals("8703242000")
-        ) {
+                || nomenclature.equals("8703241100") || nomenclature.equals("8703241900") || nomenclature.equals("8703242000")) {
             Map<String, Object> result = new HashMap<>();
             result.put("nomenclature", nomenclature);
             result.put("libelle", tarifsw.getLibelle());
+            result.put("statut", "OK"); // Ajout du statut OK
             return result;
         } else {
-            return new tarifsw(tarifsw.getLibelle());
+            Map<String, Object> result = new HashMap<>();
+            result.put("libelle", tarifsw.getLibelle());
+            result.put("statut", "NOK"); // Ajout du statut NOK
+            return result;
         }
     }
-
 
     
 
