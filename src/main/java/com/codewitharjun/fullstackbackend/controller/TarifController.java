@@ -364,6 +364,7 @@ public class TarifController {
                     ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
                     ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
 
+
         }
 
          return new tarifswtaux(counter,taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps,tauxpcs, tauxrau, tauxpc, tauxect,tauxdd);
