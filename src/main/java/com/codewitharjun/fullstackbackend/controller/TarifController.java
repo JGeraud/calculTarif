@@ -313,7 +313,7 @@ public class TarifController {
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
 
         counter++;
-
+        Double pp ;
         Double ps = tarifsw.getPs();
         Double pcs = tarifsw.getPcs();
         Double pc = tarifsw.getPc();
