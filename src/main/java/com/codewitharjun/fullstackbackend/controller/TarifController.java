@@ -5,6 +5,7 @@ import com.codewitharjun.fullstackbackend.exception.TarifNotFoundException;
 import com.codewitharjun.fullstackbackend.model.Tarifsw;
 import com.codewitharjun.fullstackbackend.repository.TarifRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -275,7 +276,7 @@ public class TarifController {
     }*/
 
     @GetMapping("/api/tariflibelle/{Libellenomenclature}")
-    Object getLibelleByNomenclature(@PathVariable("Libellenomenclature") String nomenclature) {
+    Map<String, Object> getLibelleByNomenclature(@PathVariable("Libellenomenclature") String nomenclature) {
         Tarifsw tarifsw = (Tarifsw) tarifRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
         System.out.println("Le libellé voulu est : " + tarifsw.getLibelle());
@@ -295,7 +296,12 @@ public class TarifController {
         }
     }
 
-    
+    private String getStatutByNomenclature(String nomenclature) {
+        Map<String, Object> response = getLibelleByNomenclature(nomenclature);
+        return (String) response.get("statut");
+    }
+
+
 
     //calcul du taux
 
@@ -322,6 +328,10 @@ public class TarifController {
         if (ps == null || pcs == null || pc == null || rs == null || rau == null || ect == null || da == null || tva == null) {
             throw new IllegalStateException("Une ou plusieurs valeur sont null");
         }
+        // Récupérer le statut depuis l'endpoint getLibelleByNomenclature
+        String statut = getStatutByNomenclature(nomenclature);
+
+
         double tauxda = ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da);
         double tauxaid = ((((pc+pcs+ps+dd+rs+rau+ect) +(((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*1);
         double tauxtva =   ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
@@ -329,6 +339,7 @@ public class TarifController {
         System.out.println("le taux da est " + tauxda );
         System.out.println("le taux aib est " + tauxaid );
         System.out.println("le taux tva est " + tauxtva );
+
 
         double tauxps = tarifsw.getPs();
         double tauxpcs = tarifsw.getPcs();
@@ -339,13 +350,25 @@ public class TarifController {
         double tauxdd = tarifsw.getDd_sw();
 
         // Calcul du taux
-         double taux = (pc+pcs+ps+rs+dd+rau+ect)+
-                 ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
-                 ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
-                 ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
+        double taux;
+        if (statut.equals("OK")) {
+             taux = (pc+pcs+ps+rs+dd+rau+ect)+
+                    ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
+                    ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*10)+
+                    ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
+
+        }else
+        {
+            taux = (pc+pcs+ps+rs+dd+rau+ect)+
+                    ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
+                    ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
+                    ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
+
+        }
 
          return new tarifswtaux(counter,taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps,tauxpcs, tauxrau, tauxpc, tauxect,tauxdd);
     }
+
 
 
     //Recuperation des taux lineaire
