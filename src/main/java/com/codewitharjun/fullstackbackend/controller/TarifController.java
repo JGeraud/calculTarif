@@ -7,7 +7,7 @@ import com.codewitharjun.fullstackbackend.repository.TarifRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,6 +145,7 @@ public class TarifController {
     class  tarifswtaux {
 
         double taux;
+
         int counter;
         double tauxda, tauxaib, tauxtva, tauxrs, tauxpc,tauxpcs,tauxps,tauxrau,tauxect,tauxdd;
 
@@ -301,16 +302,36 @@ public class TarifController {
         return (String) response.get("statut");
     }
 
+    // recuper la valeur du checkbox
+    @PostMapping("/api/tarif/checkbox")
+    public ResponseEntity<String> receiveCheckboxState(@RequestBody Map<String, Boolean> checkboxState) {
+        Boolean isChecked = checkboxState.get("isChecked");
 
+        if (isChecked) {
+            // Le checkbox est coché
+            // Effectuer les actions nécessaires
+            return ResponseEntity.ok("Checkbox coché");
+        } else {
+            // Le checkbox n'est pas coché
+            // Effectuer les actions nécessaires
+            return ResponseEntity.ok("Checkbox non coché");
+        }
+    }
 
     //calcul du taux
 
     private int counter = 0;
 
     @GetMapping("/api/tarif/taux/{nomenclature}")
-    tarifswtaux getTauxByNomenclature(@PathVariable String nomenclature) {
+    tarifswtaux getTauxByNomenclature(@PathVariable String nomenclature , @RequestParam(required = false) int isChecked) {
         Tarifsw tarifsw = (Tarifsw) tarifRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
+        System.out.println("recupere le check " + isChecked);
+        if (isChecked == 1) {
+            System.out.println("Le checkbox est coché.");
+        } else {
+            System.out.println("Le checkbox n'est pas coché.");
+        }
 
         counter++;
         Double pp ;
@@ -329,8 +350,9 @@ public class TarifController {
             throw new IllegalStateException("Une ou plusieurs valeur sont null");
         }
         // Récupérer le statut depuis l'endpoint getLibelleByNomenclature
-        String statut = getStatutByNomenclature(nomenclature);
 
+        String statut = getStatutByNomenclature(nomenclature);
+        System.out.println("Le statut est." + statut);
 
         double tauxda = ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da);
         double tauxaid = ((((pc+pcs+ps+dd+rs+rau+ect) +(((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*1);
@@ -351,21 +373,24 @@ public class TarifController {
 
         // Calcul du taux
         double taux;
-        if (statut.equals("OK")) {
-             taux = (pc+pcs+ps+rs+dd+rau+ect)+
-                    ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
-                    ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*10)+
-                    ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
+        taux = (pc+pcs+ps+rs+dd+rau+ect)+
+                ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
+                ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
+                ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
 
-        }else
+        if (statut.equals("OK") && isChecked == 1)
         {
-            taux = (pc+pcs+ps+rs+dd+rau+ect)+
-                    ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
-                    ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
-                    ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
+
+                System.out.println("Le statut  statut est." + statut);
+                taux = (pc+pcs+ps+rs+dd+rau+ect)+
+                        ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
+                        ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*10)+
+                        ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
+
 
 
         }
+
 
          return new tarifswtaux(counter,taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps,tauxpcs, tauxrau, tauxpc, tauxect,tauxdd);
     }
