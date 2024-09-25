@@ -332,11 +332,24 @@ public class TarifCedeaoController {
         double tauxdd = 0.0;
 
 
-        // Calcul du taux
-        double taux = (pc+pcs+ps+rs+dd+rau+ect)+
+        double taux;
+        taux = (pc+pcs+ps+rs+dd+rau+ect)+
                 ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
                 ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
                 ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
+
+        if (statut.equals("OK") && isChecked == 1)
+        {
+
+            System.out.println("Le statut  statut est." + statut);
+            taux = (pc+pcs+ps+rs+dd+rau+ect)+
+                    ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
+                    ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*10)+
+                    ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
+
+
+
+        }
 
         return new TarifCedeaoController.tarifswtaux(counter,taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps,tauxpcs, tauxrau, tauxpc, tauxect,tauxdd);
     }

@@ -376,23 +376,6 @@ public class TarifUemoaController {
 
 
 
-        } double taux;
-        taux = (pc+pcs+ps+rs+dd+rau+ect)+
-                ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
-                ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
-                ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
-
-        if (statut.equals("OK") && isChecked == 1)
-        {
-
-            System.out.println("Le statut  statut est." + statut);
-            taux = (pc+pcs+ps+rs+dd+rau+ect)+
-                    ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
-                    ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*10)+
-                    ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
-
-
-
         }
         historiqueCalculs.add(new CalculResult(nomenclature, taux));
         return new TarifUemoaController.tarifswtaux(counter,taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps,tauxpcs, tauxrau, tauxpc, tauxect,tauxdd);
