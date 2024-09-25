@@ -4,13 +4,13 @@ import com.codewitharjun.fullstackbackend.exception.TarifNotFoundException;
 import com.codewitharjun.fullstackbackend.model.Tarifsw;
 import com.codewitharjun.fullstackbackend.repository.TarifUemoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -277,12 +277,50 @@ public class TarifUemoaController {
         }
     }
     private List<CalculResult> historiqueCalculs = new ArrayList<>();
+    @GetMapping("/api/tariflibelle/{Libellenomenclature}")
+    Map<String, Object> getLibelleByNomenclatureUemoa(@PathVariable("Libellenomenclature") String nomenclature) {
+        Tarifsw tarifsw = (Tarifsw) tarifUemoaRepository.findByNomenclature(nomenclature)
+                .orElseThrow(() -> new TarifNotFoundException(nomenclature));
+        System.out.println("Le libellé voulu est : " + tarifsw.getLibelle());
 
+        if (nomenclature.equals("8703231100") || nomenclature.equals("8703231900") || nomenclature.equals("8703232000")
+                || nomenclature.equals("8703241100") || nomenclature.equals("8703241900") || nomenclature.equals("8703242000")) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("nomenclature", nomenclature);
+            result.put("libelle", tarifsw.getLibelle());
+            result.put("statut", "OK"); // Ajout du statut OK
+            return result;
+        } else {
+            Map<String, Object> result = new HashMap<>();
+            result.put("libelle", tarifsw.getLibelle());
+            result.put("statut", "NOK"); // Ajout du statut NOK
+            return result;
+        }
+    }
+    private String getStatutByNomenclature(String nomenclature) {
+        Map<String, Object> response = getLibelleByNomenclatureUemoa(nomenclature);
+        return (String) response.get("statut");
+    }
 
+    // recuper la valeur du checkbox
+    @PostMapping("/api/tarifUemoa/checkbox")
+    public ResponseEntity<String> receiveCheckboxState(@RequestBody Map<String, Boolean> checkboxState) {
+        Boolean isChecked = checkboxState.get("isChecked");
+
+        if (isChecked) {
+            // Le checkbox est coché
+            // Effectuer les actions nécessaires
+            return ResponseEntity.ok("Checkbox coché");
+        } else {
+            // Le checkbox n'est pas coché
+            // Effectuer les actions nécessaires
+            return ResponseEntity.ok("Checkbox non coché");
+        }
+    }
     private int counter = 0;
 
     @GetMapping("/api/tarifUemoa/taux/{nomenclature}")
-    tarifswtaux getTauxCedeaoByNomenclature(@PathVariable String nomenclature) {
+    tarifswtaux getTauxCedeaoByNomenclature(@PathVariable String nomenclature, @RequestParam(required = false) int isChecked) {
         Tarifsw tarifsw = (Tarifsw) tarifUemoaRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
 
@@ -317,15 +355,45 @@ public class TarifUemoaController {
         double tauxrau = tarifsw.getRau();
         double tauxect = tarifsw.getEct();
         double tauxdd = 0.0;
+        String statut = getStatutByNomenclature(nomenclature);
+        System.out.println("Le statut est." + statut);
 
 
-        // Calcul du taux
-        double taux = (pc+pcs+ps+rs+dd+rau+ect)+
+        double taux;
+        taux = (pc+pcs+ps+rs+dd+rau+ect)+
                 ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
                 ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
                 ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
 
+        if (statut.equals("OK") && isChecked == 1)
+        {
 
+            System.out.println("Le statut  statut est." + statut);
+            taux = (pc+pcs+ps+rs+dd+rau+ect)+
+                    ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
+                    ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*10)+
+                    ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
+
+
+
+        } double taux;
+        taux = (pc+pcs+ps+rs+dd+rau+ect)+
+                ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
+                ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*1)+
+                ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
+
+        if (statut.equals("OK") && isChecked == 1)
+        {
+
+            System.out.println("Le statut  statut est." + statut);
+            taux = (pc+pcs+ps+rs+dd+rau+ect)+
+                    ((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)+
+                    ((((pc+pcs+ps+dd+rs+rau+ect+ (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da)))+100)/100)*10)+
+                    ((((pc+pcs+ps+dd+rs+rau) + (((((pc+pcs+ps+dd+rs+rau+ect)+100)/100)*da))+100)/100)*tva);
+
+
+
+        }
         historiqueCalculs.add(new CalculResult(nomenclature, taux));
         return new TarifUemoaController.tarifswtaux(counter,taux,tauxaid,tauxda,tauxtva, tauxrs, tauxps,tauxpcs, tauxrau, tauxpc, tauxect,tauxdd);
     }

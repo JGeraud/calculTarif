@@ -4,10 +4,11 @@ import com.codewitharjun.fullstackbackend.exception.TarifNotFoundException;
 import com.codewitharjun.fullstackbackend.model.Tarifsw;
 import com.codewitharjun.fullstackbackend.repository.TarifCedeaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -244,16 +245,60 @@ public class TarifCedeaoController {
 
 
     }
+    @GetMapping("/api/tariflibelle/{Libellenomenclature}")
+    Map<String, Object> getLibelleByNomenclature(@PathVariable("Libellenomenclature") String nomenclature) {
+        Tarifsw tarifsw = (Tarifsw) tarifCedeaoRepository.findByNomenclature(nomenclature)
+                .orElseThrow(() -> new TarifNotFoundException(nomenclature));
+        System.out.println("Le libellé voulu est : " + tarifsw.getLibelle());
+
+        if (nomenclature.equals("8703231100") || nomenclature.equals("8703231900") || nomenclature.equals("8703232000")
+                || nomenclature.equals("8703241100") || nomenclature.equals("8703241900") || nomenclature.equals("8703242000")) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("nomenclature", nomenclature);
+            result.put("libelle", tarifsw.getLibelle());
+            result.put("statut", "OK"); // Ajout du statut OK
+            return result;
+        } else {
+            Map<String, Object> result = new HashMap<>();
+            result.put("libelle", tarifsw.getLibelle());
+            result.put("statut", "NOK"); // Ajout du statut NOK
+            return result;
+        }
+    }
+    private String getStatutByNomenclature(String nomenclature) {
+        Map<String, Object> response = getLibelleByNomenclature(nomenclature);
+        return (String) response.get("statut");
+    }
+
+    @PostMapping("/api/tarif/checkbox")
+    public ResponseEntity<String> receiveCheckboxState(@RequestBody Map<String, Boolean> checkboxState) {
+        Boolean isChecked = checkboxState.get("isChecked");
+
+        if (isChecked) {
+            // Le checkbox est coché
+            // Effectuer les actions nécessaires
+            return ResponseEntity.ok("Checkbox coché");
+        } else {
+            // Le checkbox n'est pas coché
+            // Effectuer les actions nécessaires
+            return ResponseEntity.ok("Checkbox non coché");
+        }
+    }
 
     private int counter = 0;
 
     @GetMapping("/api/tarifCedeao/taux/{nomenclature}")
-    tarifswtaux getTauxCedeaoByNomenclature(@PathVariable String nomenclature) {
+    tarifswtaux getTauxCedeaoByNomenclature(@PathVariable String nomenclature, @RequestParam(required = false) int isChecked) {
         Tarifsw tarifsw = (Tarifsw) tarifCedeaoRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
 
         counter++;
-
+        System.out.println("recupere le check " + isChecked);
+        if (isChecked == 1) {
+            System.out.println("Le checkbox est coché.");
+        } else {
+            System.out.println("Le checkbox n'est pas coché.");
+        }
         Double ps = 0.0;
         Double pcs = tarifsw.getPcs();
         Double pc = 0.0;
@@ -264,6 +309,8 @@ public class TarifCedeaoController {
         Double dd = 0.0;
         // Long aib = tarifsw.getAib();
         Double tva = tarifsw.getTva();
+        String statut = getStatutByNomenclature(nomenclature);
+        System.out.println("Le statut est." + statut);
 
         if (ps == null || pcs == null || pc == null || rs == null || rau == null || ect == null || da == null || tva == null) {
             throw new IllegalStateException("Une ou plusieurs valeur sont null");
