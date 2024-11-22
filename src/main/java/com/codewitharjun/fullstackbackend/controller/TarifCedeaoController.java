@@ -245,8 +245,8 @@ public class TarifCedeaoController {
 
 
     }
-    @GetMapping("/api/tariflibelle/{Libellenomenclature}")
-    Map<String, Object> getLibelleByNomenclature(@PathVariable("Libellenomenclature") String nomenclature) {
+    @GetMapping("/api/tariflibelletarifCedeao/{Libellenomenclature}")
+    Map<String, Object> getLibelleByNomenclaturetarifCedeao(@PathVariable("Libellenomenclature") String nomenclature) {
         Tarifsw tarifsw = (Tarifsw) tarifCedeaoRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
         System.out.println("Le libellé voulu est : " + tarifsw.getLibelle());
@@ -266,11 +266,11 @@ public class TarifCedeaoController {
         }
     }
     private String getStatutByNomenclature(String nomenclature) {
-        Map<String, Object> response = getLibelleByNomenclature(nomenclature);
+        Map<String, Object> response = getLibelleByNomenclaturetarifCedeao(nomenclature);
         return (String) response.get("statut");
     }
 
-    @PostMapping("/api/tarif/checkbox")
+    @PostMapping("/api/tarif/checkbox/tarifCedeao")
     public ResponseEntity<String> receiveCheckboxState(@RequestBody Map<String, Boolean> checkboxState) {
         Boolean isChecked = checkboxState.get("isChecked");
 

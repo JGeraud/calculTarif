@@ -277,7 +277,7 @@ public class TarifUemoaController {
         }
     }
     private List<CalculResult> historiqueCalculs = new ArrayList<>();
-    @GetMapping("/api/tariflibelle/{Libellenomenclature}")
+    @GetMapping("/api/tariflibelletarifUemoa/{Libellenomenclature}")
     Map<String, Object> getLibelleByNomenclatureUemoa(@PathVariable("Libellenomenclature") String nomenclature) {
         Tarifsw tarifsw = (Tarifsw) tarifUemoaRepository.findByNomenclature(nomenclature)
                 .orElseThrow(() -> new TarifNotFoundException(nomenclature));
